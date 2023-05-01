@@ -140,7 +140,7 @@ class Grabbing extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  ctrl.ctrlAds.showNativeAds(120),
+                  ctrl.ctrlAds.showNativeAds(100),
                   const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.all(10),
@@ -183,24 +183,27 @@ class Grabbing extends StatelessWidget {
                                   child: Container(
                                     padding: const EdgeInsets.all(10),
                                     child: ListView.builder(itemBuilder: (context, index) {
-                                      return ElevatedButton(
-                                            onPressed: () => ctrl.downloadVideo(ctrl.listData[index].url),
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.white,
-                                              backgroundColor: Colors.green,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                              onPressed: () => ctrl.downloadVideo(ctrl.listData[index].url),
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: Colors.white,
+                                                backgroundColor: Colors.green.withOpacity(0.8),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
                                               ),
+                                              child: ListTile(
+                                                contentPadding: const EdgeInsets.all(0),
+                                                textColor: Colors.white,
+                                                iconColor: Colors.white,
+                                                horizontalTitleGap: 0,
+                                                leading: const Icon(Icons.download,size: 30,),
+                                                title: Text(ctrl.listData[index].title,style: const TextStyle(fontSize: 14),),
+                                              )
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                const Icon(Icons.download),
-                                                Text(ctrl.listData[index].title, style: const TextStyle(fontSize: 16,overflow: TextOverflow.ellipsis)),
-                                              ],
-                                            )
-                                          );
+                                      );
                                         }, itemCount: ctrl.listData.length),
                                   ),
                                 ),

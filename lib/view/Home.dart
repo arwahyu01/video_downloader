@@ -53,7 +53,7 @@ class Home extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    homeCtrl.ctrlAds.showNativeAds(120),
+                    homeCtrl.ctrlAds.showNativeAds(100),
                     const SizedBox(height: 10),
                     const Text('Download Video', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),

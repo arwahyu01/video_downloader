@@ -5,6 +5,7 @@ import '/controller/SplashController.dart';
 class SplashScreen extends StatelessWidget {
   SplashScreen({Key? key}) : super(key: key);
   final ctrl = Get.put(SplashController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,37 +13,57 @@ class SplashScreen extends StatelessWidget {
       body: Stack(
         children: const [
           Center(
+              child: Icon(Icons.add_a_photo_outlined,
+                  size: 80, color: Colors.white)),
+          Center(
             child: SizedBox(
-              width: 150,
-              height: 150,
+              width: 205,
+              height: 205,
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 8,
+                  value: 0.2,
+                  backgroundColor: Colors.black),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            top: 13,
+            left: 7,
+            child: Center(
+              child: SizedBox(
+                width: 25,
+                height: 25,
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    strokeWidth: 8,
+                    backgroundColor: Colors.grey),
+              ),
+            ),
+          ),
+          Center(
+            child: SizedBox(
+              width: 155,
+              height: 155,
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 strokeWidth: 7,
-                backgroundColor: Colors.blueGrey,
+                value: 0.2,
               ),
             ),
           ),
           Center(
             child: SizedBox(
-              width: 220,
-              height: 220,
+              width: 105,
+              height: 105,
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                strokeWidth: 10,
-                value: 0.9,
-                backgroundColor: Colors.black
+                strokeWidth: 7,
+                value: 0.2,
               ),
             ),
           ),
-          Center(
-            child: Icon(Icons.video_collection_sharp, size: 100, color: Colors.white)
-          ),
-          Positioned(
-              bottom: 220,
-              right: 58,
-              top: 0,
-              left: 0,
-              child: Icon(Icons.add, size: 110, color: Colors.white)),
         ],
       ),
     );

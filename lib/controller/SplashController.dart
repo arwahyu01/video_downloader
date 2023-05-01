@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'AdsController.dart';
-// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import '../service/api.dart';
 
@@ -11,7 +11,7 @@ class SplashController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    // FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
     adsCtrl.loadAdOpen();
     if (await ApiService.checkInternet()) {
       Future.delayed(const Duration(seconds: 5), () {

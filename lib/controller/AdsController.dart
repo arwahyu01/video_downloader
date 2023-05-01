@@ -339,7 +339,7 @@ class _GetNativeAdsState extends State<GetNativeAds> {
               width: Get.height > Get.width ? Get.width : (Get.height * 0.3),
               padding: const EdgeInsets.all(2),
               alignment: Alignment.center,
-              decoration: const BoxDecoration(color: Colors.blue),
+              decoration:  BoxDecoration(border: const Border.fromBorderSide(BorderSide(color: Colors.blue, width: 2)),color: Colors.grey[200]),
               child: AdWidget(ad: nativeAd!))
           : isFailed.value
               ? AdsController().createFanNativeAds(widget.height >= 300 ? widget.height : 300)

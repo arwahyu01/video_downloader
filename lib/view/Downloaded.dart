@@ -32,8 +32,7 @@ class Downloaded extends StatelessWidget {
                     );
                     ctrl.loadFolder();
                     ctrl.loadVideos();
-                    Future.delayed(
-                        const Duration(seconds: 2), () => Get.back());
+                    Future.delayed(const Duration(seconds: 2), () => Get.back());
                   }),
             ],
             bottom: TabBar(
@@ -43,9 +42,9 @@ class Downloaded extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               automaticIndicatorColorAdjustment: true,
               labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              tabs: const [
-                Tab(text: 'Videos', icon: Icon(Icons.video_library_outlined)),
-                Tab(text: 'Folder', icon: Icon(Icons.folder_open_outlined)),
+              tabs: [
+                Tab(text: 'Videos', icon: Obx(()=> ctrl.tabActive.value == 0 ? const Icon(Icons.video_library) : const Icon(Icons.video_library_outlined))),
+                Tab(text: 'Folder', icon: Obx(()=> ctrl.tabActive.value == 1 ? const Icon(Icons.folder) : const Icon(Icons.folder_open_outlined))),
               ],
             ),
           ),
@@ -147,14 +146,11 @@ class Downloaded extends StatelessWidget {
                               itemCount: ctrl.folders.length,
                               itemBuilder: (context, index) {
                                 return ListTile(
-                                  title: Text(ctrl.folders[index].split('/').last),
+                                  title: Text(ctrl.folders[index].split('/').last.toString().capitalizeFirst!),
                                   subtitle: Text(ctrl.folders[index], maxLines: 1, overflow: TextOverflow.ellipsis),
                                   leading: const Icon(Icons.folder),
                                   minLeadingWidth: 0,
-                                  onTap: () {
-                                    Get.toNamed('/folder',
-                                        arguments: ctrl.folders[index]);
-                                  },
+                                  onTap: () => Get.toNamed('/folder', arguments: ctrl.folders[index]),
                                   trailing: const Icon(Icons.arrow_right),
                                 );
                               },

@@ -19,6 +19,7 @@ class GrabbingController extends GetxController {
   var dio = Dio();
   var progress = 0.obs;
   var currentPath = ''.obs;
+  var arguments = ''.obs;
 
   @override
   void onInit() {
@@ -67,10 +68,11 @@ class GrabbingController extends GetxController {
   }
 
   void search() async {
+    var target = Get.arguments;
     if (textController.text.isNotEmpty) {
       createFolder();
       isLoading.value = true;
-      var result = await ApiService.getListVideo(textController.text.toString(), Get.arguments.split('/').last);
+      var result = await ApiService.getListVideo(textController.text.toString(), target.split('/').last);
       if (result.isNotEmpty) {
         isLoading.value = false;
         listData.value = result;
@@ -92,44 +94,13 @@ class GrabbingController extends GetxController {
   }
 
   Future<void> downloadVideo(url) async {
-    // ctrlAds.showInterstitialAd();
+    ctrlAds.showInterstitialAd();
     createFolder();
     showProgress();
-    var targetPath = "${currentPath.value}/${DateTime.now()}.mp4";
-    print(url);
+    var targetPath = "${currentPath.value}/video-${DateTime.now().millisecond}.mp4";
     await dio.download(url, targetPath, onReceiveProgress: (rec, total) {
       var count = ((rec / total) * 100).toInt();
       progress.value = count.isNegative ? 0 : count;
-      if (rec == total) {
-        Get.back();
-        Get.snackbar('Success', 'Wait a moment, your video is being processed',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.green,
-            margin: const EdgeInsets.all(10),
-            duration: const Duration(seconds: 2),
-            colorText: Colors.white);
-        Future.delayed(const Duration(seconds: 2), () {
-          ctrlDownload.files.add(targetPath);
-          Get.toNamed('/video-player', arguments: targetPath);
-        });
-      }else{
-        File(targetPath).length().then((value) {
-          if (value == rec) {
-            Get.back();
-            Get.snackbar('Success', 'Wait a moment, your video is being processed',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.green,
-                margin: const EdgeInsets.all(10),
-                duration: const Duration(seconds: 2),
-                colorText: Colors.white);
-            Future.delayed(const Duration(seconds: 2), () {
-              ctrlDownload.files.add(targetPath);
-              Get.toNamed('/video-player', arguments: targetPath);
-            });
-          }
-        });
-
-      }
     }).catchError((e) async {
       Get.back();
       Get.snackbar('Error', 'Failed to download video, please try again later',
@@ -138,20 +109,26 @@ class GrabbingController extends GetxController {
           margin: const EdgeInsets.all(10),
           colorText: Colors.white);
       return throw Exception(e);
+    }).then((value) => {
+      Get.back(),
+      Future.delayed(const Duration(seconds: 1), () {
+          ctrlDownload.files.add(targetPath);
+          Get.toNamed('/video-player', arguments: targetPath);
+        }),
     });
   }
 
   Future<void> createFolder() async {
-    await Permission.storage.request();
+    var target = Get.arguments;
+    await Permission.storage.status.isGranted;
     var tempDir = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+    currentPath.value = tempDir.toString();
+
     if (Get.arguments != null) {
-      final Directory directory = Directory('${tempDir.toString()}${Get.arguments}');
-      if (!directory.existsSync()) {
-        Directory('${tempDir.toString()}${Get.arguments}').create(recursive: true);
+      Directory('${tempDir.toString()}$target').create(recursive: true);
+      if (Directory('${tempDir.toString()}$target').existsSync()) {
+        currentPath.value = '${tempDir.toString()}$target';
       }
-      currentPath.value = '${tempDir.toString()}${Get.arguments}';
-    } else {
-      currentPath.value = tempDir.toString();
     }
   }
 

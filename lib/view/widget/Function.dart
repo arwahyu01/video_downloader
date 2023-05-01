@@ -44,7 +44,7 @@ reviewApp() async {
 shareApp() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   SocialShare.shareOptions(
-      "Share App from ${packageInfo.appName}, Download Now https://play.google.com/store/apps/details?id=${packageInfo.packageName}",
+      "Hi, I'm using ${packageInfo.appName} to download videos from TikTok, Instagram, Facebook, Twitter, and more. \n\n Download now https://play.google.com/store/apps/details?id=${packageInfo.packageName}",
       imagePath: null);
 }
 

@@ -14,7 +14,6 @@ import 'AdsController.dart';
 class DownloadedController extends GetxController {
   var dio = Dio();
   var tabActive = 0.obs;
-  var rootFolder = '';
   var files = [].obs;
   var folders = [].obs;
   final ctrlAds = Get.put(AdsController());
@@ -22,18 +21,20 @@ class DownloadedController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    rootFolder = await ExternalPath.getExternalStoragePublicDirectory('/');
-    loadVideos();
-    loadFolder();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      loadVideos();
+      loadFolder();
+    });
   }
 
   void changeTab(int index) {
     tabActive.value = index;
   }
 
-  void loadVideos() {
+  void loadVideos() async{
     files.value = [];
-    Directory("$rootFolder/download").list(recursive: false).listen((file) {
+    var rootFolder = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+    Directory(rootFolder).list(recursive: false).listen((file) {
       if (file.path.endsWith('.mp4')) {
         files.add(file.path);
       } else {
@@ -42,9 +43,10 @@ class DownloadedController extends GetxController {
     });
   }
 
-  void loadFolder() {
+  void loadFolder() async{
     folders.value = [];
-    Directory("$rootFolder/download").list(recursive: false).listen((file) {
+    var rootFolder = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
+    Directory(rootFolder).list(recursive: false).listen((file) {
         FileStat.stat(file.path).then((value) {
           if (value.type == FileSystemEntityType.directory) {
             getFolder(file.path);

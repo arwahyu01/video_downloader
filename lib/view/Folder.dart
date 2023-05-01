@@ -13,7 +13,7 @@ class Folder extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             elevation: 0,
-            title: Text(Get.arguments.split('/').last.split('/').first),
+            title: Obx(()=> Text('${Get.arguments.split('/').last.split('/').first.toString().capitalizeFirst} Videos (${ctrl.files.length})')),
             flexibleSpace: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
