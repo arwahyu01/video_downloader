@@ -4,6 +4,7 @@ import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../service/api.dart';
 
 class AdsController extends GetxController with WidgetsBindingObserver {
@@ -44,29 +45,29 @@ class AdsController extends GetxController with WidgetsBindingObserver {
   // Controller for handling ads ================================
 
   void createInterAds() {
-    if (ApiService.typeAds == 'admob') {
+    if (ApiService.typeAds.value == 'admob') {
       createAdmobInterstitial();
-    } else if (ApiService.typeAds == 'facebook') {
+    } else if (ApiService.typeAds.value == 'facebook') {
       createFanInterstitialAd();
-    } else if (ApiService.typeAds == 'applovin') {
+    } else if (ApiService.typeAds.value == 'applovin') {
       createAppLovinInterstitialAd();
     }
   }
 
   void showInterstitialAd() {
-    if (ApiService.typeAds == 'admob') {
+    if (ApiService.typeAds.value == 'admob') {
       showAdmobInterstitial();
-    } else if (ApiService.typeAds == 'facebook') {
+    } else if (ApiService.typeAds.value == 'facebook') {
       showFanInterstitialAd();
-    } else if (ApiService.typeAds == 'applovin') {
+    } else if (ApiService.typeAds.value == 'applovin') {
       showAppLovinInterstitialAd();
     }
   }
 
   showNativeAds(height) {
-    if (ApiService.typeAds == 'admob') {
+    if (ApiService.typeAds.value == 'admob') {
       return GetNativeAds(height: height);
-    } else if (ApiService.typeAds == 'facebook') {
+    } else if (ApiService.typeAds.value == 'facebook') {
       return createFanNativeAds(height);
     } else {
       return Container();
@@ -74,15 +75,17 @@ class AdsController extends GetxController with WidgetsBindingObserver {
   }
 
   void loadAdOpen() {
-    if (ApiService.typeAds == 'admob' || ApiService.typeAds == 'facebook') {
+    if (ApiService.typeAds.value == 'admob' || ApiService.typeAds.value == 'facebook') {
       admobAppOpen();
-    } else if (ApiService.typeAds == 'applovin') {
+    } else if (ApiService.typeAds.value == 'applovin') {
       appLovinAppOpen();
+    }else{
+      admobAppOpen();
     }
   }
 
   void showAppOpenIfAvailable() async {
-    if (ApiService.typeAds == 'admob' || ApiService.typeAds == 'facebook') {
+    if (ApiService.typeAds.value == 'admob' || ApiService.typeAds.value == 'facebook') {
       if (appOpenAd == null) {
         loadAdOpen();
         return;
@@ -104,7 +107,7 @@ class AdsController extends GetxController with WidgetsBindingObserver {
         },
       );
       appOpenAd!.show();
-    } else if (ApiService.typeAds == 'applovin') {
+    } else if (ApiService.typeAds.value == 'applovin') {
       bool isReady = (await AppLovinMAX.isAppOpenAdReady(ApiService.adsUnitId['appopen_applovin']))!;
       if (isReady) {
         AppLovinMAX.showAppOpenAd(ApiService.adsUnitId['appopen_applovin'] ?? '');
@@ -118,9 +121,10 @@ class AdsController extends GetxController with WidgetsBindingObserver {
 
   // ADMOB ================================
 
-  void admobAppOpen() {
+  void admobAppOpen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     AppOpenAd.load(
-      adUnitId: ApiService.adsUnitId['app_open'] ?? '',
+      adUnitId: prefs.getString('app_open') ?? ApiService.adsUnitId['app_open'] ?? '',
       orientation: AppOpenAd.orientationPortrait,
       request: const AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
@@ -131,6 +135,7 @@ class AdsController extends GetxController with WidgetsBindingObserver {
         onAdFailedToLoad: (error) {
           appOpenAd = null;
           appOpenIsLoaded.value = false;
+          appLovinAppOpen();
         },
       ),
     );

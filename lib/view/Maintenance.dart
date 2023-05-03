@@ -14,8 +14,7 @@ class Maintenance extends StatelessWidget {
             children: [
               const Icon(Icons.error_outline_sharp, size: 100),
               const SizedBox(height: 20),
-              Text(Get.arguments.toString(),
-                  style: const TextStyle(fontSize: 20, wordSpacing: 2)),
+              Text(Get.arguments.toString(), style: const TextStyle(fontSize: 16, wordSpacing: 2)),
               const SizedBox(height: 20),
             ],
           ),

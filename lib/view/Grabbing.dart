@@ -15,7 +15,7 @@ class Grabbing extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              openUrl('http://192.168.100.146/video-downloader/help.php?p=${Get.arguments.split('/').last.toString()}');
+              ctrl.openUrl(Get.arguments.split('/').last.toString());
             },
             icon: const Icon(Icons.help_outline),
           ),

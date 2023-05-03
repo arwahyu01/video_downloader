@@ -1,8 +1,5 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -74,46 +71,7 @@ openDialogRate() {
   });
 }
 
-void openUrl(String s) {
-  Get.dialog(
-      useSafeArea: true,
-      transitionCurve: Curves.easeInOut,
-      InAppWebView(
-        initialUrlRequest: URLRequest(url: Uri.parse(s)),
-        onEnterFullscreen: (controller) {
-          SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-          ]);
-        },
-        androidOnPermissionRequest: (controller, origin, resources) async {
-          return PermissionRequestResponse(
-              resources: resources,
-              action: PermissionRequestResponseAction.GRANT);
-        },
-        onWebViewCreated: (controller) {},
-        initialOptions: InAppWebViewGroupOptions(
-          crossPlatform: InAppWebViewOptions(
-            javaScriptEnabled: true,
-            supportZoom: true,
-          ),
-        ),
-        onLoadStart: (controller, url) {
-          if (kDebugMode) {
-            print('onLoadStart: $url');
-          }
-        },
-        onLoadError: (controller, url, code, message) {
-          if (kDebugMode) {
-            print('onLoadError: $url, $code, $message');
-          }
-        },
-        onLoadHttpError: (controller, url, code, message) {
-          if (kDebugMode) {
-            print('onLoadHttpError: $url, $code, $message');
-          }
-        },
-      ));
-}
+
 
 Future<void> requestReviewApp() async {
   final InAppReview inAppReview = InAppReview.instance;

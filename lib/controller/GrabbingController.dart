@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'AdsController.dart';
 import 'DownloadedController.dart';
 import '../service/api.dart';
@@ -42,6 +44,7 @@ class GrabbingController extends GetxController {
           var url = value.text;
           if (url != null) {
             var check = category == 'facebook' ? 'fb.watch' : "$category.com";
+                check = category == 'youtube' ? 'youtu.be' : check;
             if (url.contains(check)) {
               textController.text = url;
               Future.delayed(const Duration(milliseconds: 100), () {
@@ -54,6 +57,7 @@ class GrabbingController extends GetxController {
                     search();
                   });
                 } else {
+                  textController.text = url;
                   Get.snackbar('Error', 'Invalid URL, your url is not from $category',
                       snackPosition: SnackPosition.BOTTOM,
                       margin: const EdgeInsets.all(10),
@@ -103,6 +107,7 @@ class GrabbingController extends GetxController {
       progress.value = count.isNegative ? 0 : count;
     }).catchError((e) async {
       Get.back();
+      progress.value = 0;
       Get.snackbar('Error', 'Failed to download video, please try again later',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -111,6 +116,7 @@ class GrabbingController extends GetxController {
       return throw Exception(e);
     }).then((value) => {
       Get.back(),
+      progress.value = 0,
       Future.delayed(const Duration(seconds: 1), () {
           ctrlDownload.files.add(targetPath);
           Get.toNamed('/video-player', arguments: targetPath);
@@ -119,11 +125,13 @@ class GrabbingController extends GetxController {
   }
 
   Future<void> createFolder() async {
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
     var target = Get.arguments;
-    await Permission.storage.status.isGranted;
     var tempDir = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);
-    currentPath.value = tempDir.toString();
 
+    if(androidInfo.version.sdkInt < 30) await Permission.storage.request();
+
+    currentPath.value = tempDir.toString();
     if (Get.arguments != null) {
       Directory('${tempDir.toString()}$target').create(recursive: true);
       if (Directory('${tempDir.toString()}$target').existsSync()) {
@@ -185,5 +193,25 @@ class GrabbingController extends GetxController {
     } else {
       return ctrlDownload.showThumbnailVideo(data.url);
     }
+  }
+
+  void openUrl(String s) {
+    Get.dialog(
+        useSafeArea: true,
+        transitionCurve: Curves.easeInOut,
+        InAppWebView(
+          initialUrlRequest: URLRequest(url: Uri.parse("${ApiService.baseUrlGrab}/help.php?p=$s")),
+          onEnterFullscreen: (controller) {
+            SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+          },
+          androidOnPermissionRequest: (controller, origin, resources) async {
+            return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
+          },
+          onWebViewCreated: (controller) {},
+          initialOptions: InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions(javaScriptEnabled: true, supportZoom: true)),
+          onLoadStart: (controller, url) {},
+          onLoadError: (controller, url, code, message) {},
+          onLoadHttpError: (controller, url, code, message) {},
+        ));
   }
 }

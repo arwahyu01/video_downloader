@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:474982466891:android:694626b939ee58a82594ce",
+        "mobilesdk_app_id": "1:474982466891:android:8f963705b307703b2594ce",
         "android_client_info": {
-          "package_name": "com.videodownloader.video_downloader"
+          "package_name": "com.hddownloader.freedownloader.videoimagesaver.mx"
         }
       },
       "oauth_client": [

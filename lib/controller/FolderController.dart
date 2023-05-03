@@ -25,7 +25,6 @@ class FolderController extends GetxController {
 
   void loadImported() {
     files.value = [];
-    print(Get.arguments);
     Directory(Get.arguments).list(recursive: true).listen((file) {
       if (file.path.endsWith('.mp4')) {
         files.add(file.path);
